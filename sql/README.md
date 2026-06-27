@@ -1,6 +1,6 @@
 # PostgreSQL SQL Practice 🚀
 
-A comprehensive collection of **PostgreSQL SQL scripts** designed for **SQL learning**, **Data Analyst interview preparation**, and **real-world database practice**.
+A curated collection of **PostgreSQL SQL scripts** covering SQL fundamentals, intermediate concepts, and interview-oriented queries for aspiring **Data Analysts**, **Data Scientists**, and **Data Engineers**.
 
 ---
 
@@ -8,20 +8,26 @@ A comprehensive collection of **PostgreSQL SQL scripts** designed for **SQL lear
 
 **Chandra Patel**
 
-* 🐙 GitHub: https://github.com/Chandrabhawan
-* 🌐 Portfolio: https://chandrabhawan.netlify.app/
+* **GitHub:** https://github.com/Chandrabhawan
+* **Portfolio:** https://chandrabhawan.netlify.app/
 
 ---
 
-# 📖 About
+## 📖 About
 
-This repository contains SQL scripts covering PostgreSQL fundamentals to advanced concepts. It is intended for students, beginners, and professionals preparing for Data Analyst, Business Analyst, Data Engineer, and Data Scientist interviews.
+This repository is a personal SQL practice project built using **PostgreSQL**.
 
-The repository includes database creation scripts, table creation scripts, data manipulation queries, filtering, sorting, aggregation, joins, subqueries, window functions, and interview-oriented SQL problems.
+It contains database creation scripts, table creation scripts, and SQL queries organized to help learners understand SQL concepts step by step. The repository is intended for:
+
+* SQL Beginners
+* Data Analyst Interview Preparation
+* Business Analyst Practice
+* Data Science SQL Practice
+* PostgreSQL Learning
 
 ---
 
-# 🛠️ Technologies Used
+## 🛠️ Technologies Used
 
 * PostgreSQL
 * pgAdmin 4
@@ -30,43 +36,36 @@ The repository includes database creation scripts, table creation scripts, data 
 
 ---
 
-# 📂 Repository Structure
+## 📂 Repository Structure
 
 ```text
 PostgreSQL-SQL-Practice/
 │
 ├── README.md
-│
-├── Database/
-│   ├── create_database.sql
-│   ├── create_orders_table.sql
-│   ├── create_employees_table.sql
-│
-├── Queries/
-│   ├── select.sql
-│   ├── where.sql
-│   ├── order_by.sql
-│   ├── limit_offset.sql
-│   ├── distinct.sql
-│   ├── group_by.sql
-│   ├── having.sql
-│   ├── joins.sql
-│   ├── subqueries.sql
-│   ├── cte.sql
-│   ├── window_functions.sql
-│   └── interview_questions.sql
-│
-└── Datasets/
-    ├── orders_data.csv
-    └── employees.csv
+├── 01_create_orders_data_table.sql
+├── 02_create_employees_table.sql
+├── 03_data_analyst_sql_practice.sql
 ```
 
 ---
 
-# 📚 Topics Covered
+## 📄 Files Description
 
-### SQL Basics
+| File                                 | Description                                                                       |
+| ------------------------------------ | --------------------------------------------------------------------------------- |
+| **01_create_orders_data_table.sql**  | Creates the `orders_data` table used for SQL practice.                            |
+| **02_create_employees_table.sql**    | Creates the `employees` table with sample employee attributes.                    |
+| **03_data_analyst_sql_practice.sql** | Contains SQL practice queries ranging from basic to advanced PostgreSQL concepts. |
 
+---
+
+## 📚 SQL Topics Covered
+
+### Basic SQL
+
+* CREATE DATABASE
+* CREATE TABLE
+* INSERT INTO
 * SELECT
 * DISTINCT
 * WHERE
@@ -93,7 +92,11 @@ PostgreSQL-SQL-Practice/
 * MIN()
 * MAX()
 
-### GROUP BY & HAVING
+### Data Analysis
+
+* GROUP BY
+* HAVING
+* CASE WHEN
 
 ### Joins
 
@@ -104,61 +107,33 @@ PostgreSQL-SQL-Practice/
 * CROSS JOIN
 * SELF JOIN
 
-### Subqueries
+### Advanced SQL
 
-### Common Table Expressions (CTE)
-
-### Window Functions
-
-* ROW_NUMBER()
-* RANK()
-* DENSE_RANK()
-* NTILE()
-* LAG()
-* LEAD()
-* FIRST_VALUE()
-* LAST_VALUE()
-
-### Conditional Statements
-
-* CASE WHEN
-* COALESCE
-* NULLIF
-
-### Data Manipulation
-
-* INSERT
-* UPDATE
-* DELETE
-* TRUNCATE
-
-### Constraints
-
-* PRIMARY KEY
-* FOREIGN KEY
-* UNIQUE
-* CHECK
-* DEFAULT
-
-### Views
-
-### Indexes
-
-### SQL Interview Questions
+* Subqueries
+* Common Table Expressions (CTEs)
+* Window Functions
+* Ranking Functions
+* Views
+* Indexes
 
 ---
 
-# 📊 Sample Tables
+## 🎯 Learning Objectives
 
-* orders_data
-* employees
-* departments
-* customers
-* products
+After completing these practice scripts, you will be able to:
+
+* Write efficient PostgreSQL queries.
+* Retrieve and filter data.
+* Sort and paginate query results.
+* Use aggregate functions for analysis.
+* Perform joins across multiple tables.
+* Write subqueries and CTEs.
+* Use window functions for advanced analytics.
+* Solve common SQL interview questions.
 
 ---
 
-# 🚀 Getting Started
+## 🚀 Getting Started
 
 ### 1. Clone the repository
 
@@ -168,61 +143,46 @@ git clone https://github.com/Chandrabhawan/PostgreSQL-SQL-Practice.git
 
 ### 2. Open PostgreSQL
 
-Launch **pgAdmin 4** and connect to your PostgreSQL server.
+Open **pgAdmin 4** and connect to your PostgreSQL server.
 
-### 3. Create the database
+### 3. Run the SQL files in order
 
-Run:
-
-```sql
-CREATE DATABASE data_analyst;
-```
-
-### 4. Execute SQL scripts
-
-Run the scripts in the following order:
-
-1. Create Database
-2. Create Tables
-3. Insert Sample Data
-4. Execute Practice Queries
+1. `01_create_orders_data_table.sql`
+2. `02_create_employees_table.sql`
+3. `03_data_analyst_sql_practice.sql`
 
 ---
 
-# 🎯 Learning Objectives
+## 💡 Best Practices
 
-After completing this repository, you will be able to:
-
-* Write SQL queries confidently.
-* Filter and sort data efficiently.
-* Use aggregate functions.
-* Work with joins and subqueries.
-* Solve SQL interview questions.
-* Perform analytical queries using PostgreSQL.
+* Execute queries section by section.
+* Read the comments before each query.
+* Modify the queries to experiment with different outputs.
+* Practice writing the queries yourself before checking the solutions.
 
 ---
 
-# 🤝 Contributing
+## 🤝 Contributing
 
 Contributions are welcome.
 
-1. Fork the repository.
-2. Create a feature branch.
-3. Commit your changes.
-4. Submit a Pull Request.
+If you find an issue or have a suggestion, feel free to open an issue or submit a pull request.
 
 ---
 
-# ⭐ Support
+## ⭐ Support
 
-If you found this repository useful, please consider giving it a **Star ⭐** on GitHub.
-
----
-
-# 📄 License
-
-This project is licensed under the **MIT License**.
+If this repository helps you in your SQL learning journey, please consider giving it a **⭐ Star** on GitHub.
 
 ---
 
-## Happy Learning and Happy Coding! 🚀
+## 📬 Contact
+
+**Chandra Patel**
+
+* GitHub: https://github.com/Chandrabhawan
+* Portfolio: https://chandrabhawan.netlify.app/
+
+---
+
+**Happy Learning & Happy Querying! 🚀**
