@@ -252,136 +252,360 @@ WHERE quantity between 3 and 5
 order by quantity;
 
 
-SELECT *
-FROM orders_data
-WHERE quantity in(3,4,5)
-order by quantity;
+-- ==========================================================
+-- IN Operator
+-- Retrieve records where quantity is either 3, 4, or 5.
+-- ==========================================================
 
 SELECT *
 FROM orders_data
---WHERE quantity in(3,5)
-where quantity=3 or quantity=5
-order by quantity;
-
-select *
-from orders_data
-where city in ('Los Angeles' , 'Houston')
-order by city;
-
-select *
-from orders_data
-where order_date between '2019-12-27' and '2021-12-09'
-order by order_date;
-
-select *
-from orders_data
-where quantity not in (3,5);
-
---Pattern matching
-
-select *
-from orders_data
-where customer_name like 'S%';
-
-select *
-from orders_data
-where customer_name like '%n';
-
-select *
-from orders_data
-where customer_name like '%e%';
+WHERE quantity IN (3,4,5)
+ORDER BY quantity;
 
 
-select *
-from orders_data
-where customer_name like '_e%';
+-- ==========================================================
+-- OR Operator
+-- Retrieve records where quantity is either 3 or 5.
+-- Equivalent to using the IN operator.
+-- ==========================================================
 
--- 2nd char a or e
+SELECT *
+FROM orders_data
+WHERE quantity = 3 OR quantity = 5
+ORDER BY quantity;
+
+
+-- ==========================================================
+-- IN Operator with String Values
+-- Retrieve records where city is Los Angeles or Houston.
+-- ==========================================================
+
+SELECT *
+FROM orders_data
+WHERE city IN ('Los Angeles','Houston')
+ORDER BY city;
+
+
+-- ==========================================================
+-- BETWEEN Operator
+-- Retrieve orders placed between two dates (inclusive).
+-- ==========================================================
+
+SELECT *
+FROM orders_data
+WHERE order_date BETWEEN '2019-12-27' AND '2021-12-09'
+ORDER BY order_date;
+
+
+-- ==========================================================
+-- NOT IN Operator
+-- Retrieve records excluding quantities 3 and 5.
+-- ==========================================================
+
+SELECT *
+FROM orders_data
+WHERE quantity NOT IN (3,5);
+
+
+-- ==========================================================
+-- Pattern Matching using LIKE
+-- Customer name starts with 'S'
+-- ==========================================================
+
+SELECT *
+FROM orders_data
+WHERE customer_name LIKE 'S%';
+
+
+-- ==========================================================
+-- Customer name ends with 'n'
+-- ==========================================================
+
+SELECT *
+FROM orders_data
+WHERE customer_name LIKE '%n';
+
+
+-- ==========================================================
+-- Customer name contains the letter 'e'
+-- ==========================================================
+
+SELECT *
+FROM orders_data
+WHERE customer_name LIKE '%e%';
+
+
+-- ==========================================================
+-- Customer name where the second character is 'e'
+-- ==========================================================
+
+SELECT *
+FROM orders_data
+WHERE customer_name LIKE '_e%';
+
+
+-- ==========================================================
+-- Regular Expression
+-- Customer name where the second character is 'a' or 'e'
+-- ==========================================================
 
 SELECT *
 FROM orders_data
 WHERE customer_name ~ '^.[ae]';
 
-   ---or---
+
+-- ==========================================================
+-- SIMILAR TO
+-- Alternative to regular expressions.
+-- ==========================================================
 
 SELECT *
 FROM orders_data
 WHERE customer_name SIMILAR TO '(_[ae]%)';
 
 
---aggregation
+-- ==========================================================
+-- Aggregate Functions
+-- Calculate total sales.
+-- ==========================================================
 
-SELECT
-    SUM(sales) AS total_sales
+SELECT SUM(sales) AS total_sales
 FROM orders_data;
 
-SELECT
-    MIN(sales) AS min_sales
+
+-- ==========================================================
+-- Find minimum sales value.
+-- ==========================================================
+
+SELECT MIN(sales) AS min_sales
 FROM orders_data;
 
-SELECT
-    MAX(sales) AS max_sales
+
+-- ==========================================================
+-- Find maximum sales value.
+-- ==========================================================
+
+SELECT MAX(sales) AS max_sales
 FROM orders_data;
+
+
+-- ==========================================================
+-- Calculate total sales and total profit.
+-- ==========================================================
 
 SELECT
     SUM(sales) AS total_sales,
     SUM(profit) AS total_profit
 FROM orders_data;
 
-select avg(sales) as avg_sales
-from orders_data;
 
-select count(*) as no_of_records
-from orders_data;
+-- ==========================================================
+-- Calculate average sales.
+-- ==========================================================
 
-select sum(sales)/count(*) as avg_sales
-from orders_data;
-
-select * from orders_data;
+SELECT AVG(sales) AS avg_sales
+FROM orders_data;
 
 
-update orders_data set city = null 
-where order_id in ('CA-2020-152156', 'CA-2018-115812');
+-- ==========================================================
+-- Count total number of records.
+-- ==========================================================
+
+SELECT COUNT(*) AS no_of_records
+FROM orders_data;
 
 
-select count(city) from orders_data;
+-- ==========================================================
+-- Calculate average sales manually.
+-- ==========================================================
 
+SELECT SUM(sales) / COUNT(*) AS avg_sales
+FROM orders_data;
+
+
+-- ==========================================================
+-- Update city to NULL for selected orders.
+-- Used for practicing NULL handling.
+-- ==========================================================
+
+UPDATE orders_data
+SET city = NULL
+WHERE order_id IN ('CA-2020-152156','CA-2018-115812');
+
+
+-- ==========================================================
+-- COUNT(column) ignores NULL values.
+-- ==========================================================
+
+SELECT COUNT(city)
+FROM orders_data;
+
+
+-- ==========================================================
+-- Retrieve rows where city is NULL.
+-- ==========================================================
 
 SELECT *
 FROM orders_data
 WHERE city IS NULL;
 
 
+-- ==========================================================
+-- Retrieve rows where city is NOT NULL.
+-- ==========================================================
+
 SELECT *
 FROM orders_data
-WHERE city IS not NULL
-
-select count(*), count(order_id), count(city) as no_of_city,
-count(1)
-from orders_data;
-
-select distinct category
-from orders_data;
-
-select count(*), count(order_id), count(city) as no_of_city,
-count('chandra'), count(distinct category), count(distinct city)
-from orders_data;
+WHERE city IS NOT NULL;
 
 
+-- ==========================================================
+-- Difference between COUNT(*), COUNT(column),
+-- COUNT(1), and COUNT(DISTINCT).
+-- ==========================================================
+
+SELECT
+    COUNT(*) AS total_rows,
+    COUNT(order_id) AS total_orders,
+    COUNT(city) AS no_of_city,
+    COUNT(1) AS count_one
+FROM orders_data;
 
 
+-- ==========================================================
+-- Retrieve unique product categories.
+-- ==========================================================
+
+SELECT DISTINCT category
+FROM orders_data;
 
 
+-- ==========================================================
+-- COUNT Examples
+-- ==========================================================
+
+SELECT
+    COUNT(*) AS total_rows,
+    COUNT(order_id),
+    COUNT(city),
+    COUNT('chandra'),
+    COUNT(DISTINCT category),
+    COUNT(DISTINCT city)
+FROM orders_data;
 
 
+-- ==========================================================
+-- GROUP BY
+-- Calculate total sales and profit by category and region.
+-- ==========================================================
+
+SELECT
+    category,
+    region,
+    SUM(sales) AS category_sales,
+    SUM(profit) AS category_profit
+FROM orders_data
+GROUP BY category, region
+ORDER BY region, category;
 
 
+-- ==========================================================
+-- HAVING Clause
+-- Display cities where total sales exceed 500.
+-- ==========================================================
+
+SELECT
+    city,
+    SUM(sales) AS city_sales
+FROM orders_data
+GROUP BY city
+HAVING SUM(sales) > 500;
 
 
+-- ==========================================================
+-- WHERE + GROUP BY + HAVING
+-- Calculate city sales only for the West region.
+-- ==========================================================
+
+SELECT
+    city,
+    SUM(sales) AS city_sales
+FROM orders_data
+WHERE region = 'West'
+GROUP BY city
+HAVING SUM(sales) > 500
+ORDER BY city_sales
+LIMIT 2;
 
 
+-- Query Execution Order:
+-- FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT
 
 
+-- ==========================================================
+-- Display return records.
+-- ==========================================================
+
+SELECT *
+FROM returns_data;
+
+
+-- ==========================================================
+-- INNER JOIN
+-- Retrieve matching records from orders_data and returns_data.
+-- ==========================================================
+
+SELECT *
+FROM orders_data
+INNER JOIN returns_data
+ON orders_data.order_id = returns_data.order_id;
+
+
+-- ==========================================================
+-- Calculate sales by category for returned orders.
+-- ==========================================================
+
+SELECT
+    category,
+    SUM(sales)
+FROM orders_data
+INNER JOIN returns_data
+ON orders_data.order_id = returns_data.order_id
+GROUP BY category;
+
+
+-- ==========================================================
+-- Display orders returned due to "Wrong Items".
+-- ==========================================================
+
+SELECT *
+FROM orders_data
+INNER JOIN returns_data
+ON orders_data.order_id = returns_data.order_id
+WHERE return_reason = 'Wrong Items';
+
+
+-- ==========================================================
+-- Case-insensitive filtering using ILIKE.
+-- ==========================================================
+
+SELECT *
+FROM orders_data o
+INNER JOIN returns_data r
+ON o.order_id = r.order_id
+WHERE r.return_reason ILIKE 'wrong items'
+AND o.city = 'Los Angeles';
+
+
+-- ==========================================================
+-- Retrieve details for a specific order.
+-- ==========================================================
+
+SELECT *
+FROM orders_data
+INNER JOIN returns_data
+ON orders_data.order_id = returns_data.order_id
+WHERE orders_data.order_id = 'CA-2020-109806';
 
 
 
