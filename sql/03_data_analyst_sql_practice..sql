@@ -240,8 +240,157 @@ ORDER BY quantity;
 SELECT *
 FROM orders_data
 WHERE quantity >= 3
-  AND quantity <= 5;
+  AND quantity <= 5
+order by quantity;
 
 -- Alternative:
 -- WHERE quantity BETWEEN 3 AND 5;
-```
+
+SELECT *
+FROM orders_data
+WHERE quantity between 3 and 5
+order by quantity;
+
+
+SELECT *
+FROM orders_data
+WHERE quantity in(3,4,5)
+order by quantity;
+
+SELECT *
+FROM orders_data
+--WHERE quantity in(3,5)
+where quantity=3 or quantity=5
+order by quantity;
+
+select *
+from orders_data
+where city in ('Los Angeles' , 'Houston')
+order by city;
+
+select *
+from orders_data
+where order_date between '2019-12-27' and '2021-12-09'
+order by order_date;
+
+select *
+from orders_data
+where quantity not in (3,5);
+
+--Pattern matching
+
+select *
+from orders_data
+where customer_name like 'S%';
+
+select *
+from orders_data
+where customer_name like '%n';
+
+select *
+from orders_data
+where customer_name like '%e%';
+
+
+select *
+from orders_data
+where customer_name like '_e%';
+
+-- 2nd char a or e
+
+SELECT *
+FROM orders_data
+WHERE customer_name ~ '^.[ae]';
+
+   ---or---
+
+SELECT *
+FROM orders_data
+WHERE customer_name SIMILAR TO '(_[ae]%)';
+
+
+--aggregation
+
+SELECT
+    SUM(sales) AS total_sales
+FROM orders_data;
+
+SELECT
+    MIN(sales) AS min_sales
+FROM orders_data;
+
+SELECT
+    MAX(sales) AS max_sales
+FROM orders_data;
+
+SELECT
+    SUM(sales) AS total_sales,
+    SUM(profit) AS total_profit
+FROM orders_data;
+
+select avg(sales) as avg_sales
+from orders_data;
+
+select count(*) as no_of_records
+from orders_data;
+
+select sum(sales)/count(*) as avg_sales
+from orders_data;
+
+select * from orders_data;
+
+
+update orders_data set city = null 
+where order_id in ('CA-2020-152156', 'CA-2018-115812');
+
+
+select count(city) from orders_data;
+
+
+SELECT *
+FROM orders_data
+WHERE city IS NULL;
+
+
+SELECT *
+FROM orders_data
+WHERE city IS not NULL
+
+select count(*), count(order_id), count(city) as no_of_city,
+count(1)
+from orders_data;
+
+select distinct category
+from orders_data;
+
+select count(*), count(order_id), count(city) as no_of_city,
+count('chandra'), count(distinct category), count(distinct city)
+from orders_data;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
