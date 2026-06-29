@@ -607,14 +607,235 @@ INNER JOIN returns_data
 ON orders_data.order_id = returns_data.order_id
 WHERE orders_data.order_id = 'CA-2020-109806';
 
+```sql
+-- ==========================================================
+-- JOINS
+-- ==========================================================
+
+-- Retrieve the order date and return reason for a specific order.
+SELECT o.order_date, r.return_reason
+FROM orders_data o
+INNER JOIN returns_data r
+ON o.order_id = r.order_id
+WHERE o.order_id = 'CA-2020-109806';
+
+-- Query Execution Order:
+-- FROM → JOIN → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT
+
+-- Retrieve all orders along with their return information.
+-- Orders without returns will display NULL values.
+SELECT *
+FROM orders_data o
+LEFT JOIN returns_data r
+ON o.order_id = r.order_id;
+
+-- Retrieve orders that have not been returned.
+SELECT *
+FROM orders_data o
+LEFT JOIN returns_data r
+ON o.order_id = r.order_id
+WHERE r.return_reason IS NULL;
+
+-- Retrieve only returned orders.
+SELECT o.*, r.return_reason
+FROM orders_data o
+INNER JOIN returns_data r
+ON o.order_id = r.order_id;
+
+-- Calculate total sales grouped by return reason.
+SELECT
+    r.return_reason,
+    SUM(o.sales) AS return_sales
+FROM orders_data o
+LEFT JOIN returns_data r
+ON o.order_id = r.order_id
+GROUP BY r.return_reason;
+
+-- Correct an incorrect order_id in returns_data.
+UPDATE returns_data
+SET order_id = 'US-2019-164175'
+WHERE order_id = 'US-2018-164175';
+
+-- Standardize inconsistent return reasons using CASE.
+SELECT *,
+       CASE
+           WHEN return_reason = 'Wrong Item'
+           THEN 'Wrong Items'
+           ELSE return_reason
+       END AS new_return_reason
+FROM returns_data;
 
 
+-- ==========================================================
+-- CASE WHEN
+-- ==========================================================
+
+-- Categorize orders based on profit values.
+SELECT *,
+       CASE
+           WHEN profit < 0 THEN 'Loss'
+           WHEN profit < 50 THEN 'Low Profit'
+           WHEN profit < 100 THEN 'High Profit'
+           ELSE 'Very High Profit'
+       END AS profit_bucket
+FROM orders_data;
+
+-- Categorize profit using the BETWEEN operator.
+SELECT *,
+       CASE
+           WHEN profit < 0 THEN 'Loss'
+           WHEN profit BETWEEN 0 AND 49 THEN 'Low Profit'
+           WHEN profit BETWEEN 50 AND 99 THEN 'High Profit'
+           ELSE 'Very High Profit'
+       END AS profit_bucket
+FROM orders_data;
 
 
+-- ==========================================================
+-- STRING FUNCTIONS
+-- ==========================================================
+
+-- Demonstration of commonly used PostgreSQL string functions.
+-- LENGTH(), LEFT(), RIGHT(), SUBSTRING(), REPLACE()
+
+SELECT *,
+       LENGTH(customer_name) AS cust_length,
+       LEFT(order_id,2) AS order_prefix,
+       RIGHT(order_id,6) AS order_suffix,
+       SUBSTRING(order_id,4,4) AS order_year,
+       SUBSTRING(order_id,6,2) AS order_sequence,
+       REPLACE(customer_name,'Cl','Pa') AS updated_name
+FROM orders_data;
 
 
+-- ==========================================================
+-- DATE FUNCTIONS
+-- ==========================================================
+
+-- Extract different parts of a date.
+SELECT
+    order_id,
+    order_date,
+    EXTRACT(YEAR FROM order_date) AS order_year,
+    EXTRACT(MONTH FROM order_date) AS order_month,
+    EXTRACT(QUARTER FROM order_date) AS order_quarter,
+    EXTRACT(WEEK FROM order_date) AS order_week
+FROM orders_data;
+
+-- Calculate total monthly sales.
+SELECT
+    EXTRACT(MONTH FROM order_date) AS order_month,
+    SUM(sales) AS total_sales
+FROM orders_data
+GROUP BY EXTRACT(MONTH FROM order_date)
+ORDER BY order_month;
+
+-- Calculate monthly sales by year.
+SELECT
+    EXTRACT(YEAR FROM order_date) AS order_year,
+    EXTRACT(MONTH FROM order_date) AS order_month,
+    SUM(sales) AS total_sales
+FROM orders_data
+GROUP BY
+    EXTRACT(YEAR FROM order_date),
+    EXTRACT(MONTH FROM order_date)
+ORDER BY
+    order_year,
+    order_month;
+
+-- Format dates using TO_CHAR().
+SELECT
+    order_id,
+    order_date,
+    TO_CHAR(order_date,'Month') AS order_month,
+    TO_CHAR(order_date,'Mon') AS order_month_short,
+    TO_CHAR(order_date,'Day') AS order_day,
+    TO_CHAR(order_date,'YYYY') AS order_year
+FROM orders_data;
 
 
+-- ==========================================================
+-- DATE DIFFERENCE
+-- ==========================================================
+
+-- Calculate shipping duration in days.
+SELECT
+    order_id,
+    order_date,
+    ship_date,
+    ship_date - order_date AS shipping_days
+FROM orders_data;
+
+-- Calculate the interval between order and shipping dates.
+SELECT
+    order_id,
+    order_date,
+    ship_date,
+    AGE(ship_date, order_date) AS shipping_interval
+FROM orders_data;
+
+-- Extract the month component from the interval.
+SELECT
+    order_id,
+    order_date,
+    ship_date,
+    EXTRACT(MONTH FROM AGE(ship_date, order_date)) AS shipping_month
+FROM orders_data;
+
+-- Extract the year component from the interval.
+SELECT
+    order_id,
+    order_date,
+    ship_date,
+    EXTRACT(YEAR FROM AGE(ship_date, order_date)) AS shipping_year
+FROM orders_data;
 
 
+-- ==========================================================
+-- DATE ARITHMETIC
+-- ==========================================================
+
+-- Add 10 days to the order date.
+SELECT
+    order_id,
+    order_date,
+    ship_date,
+    order_date + 10 AS new_date
+FROM orders_data;
+
+-- Add and subtract intervals from a date.
+SELECT
+    order_id,
+    order_date,
+    ship_date,
+    order_date + INTERVAL '10 days' AS plus_10_days,
+    order_date + INTERVAL '1 month' AS plus_1_month,
+    order_date + INTERVAL '1 year' AS plus_1_year,
+    order_date - INTERVAL '15 days' AS minus_15_days
+FROM orders_data;
+
+
+-- ==========================================================
+-- LEAD TIME & DELIVERY DATE
+-- ==========================================================
+
+-- This query will fail because quantity is NUMERIC.
+SELECT
+    order_id,
+    order_date,
+    ship_date,
+    quantity,
+    ship_date - order_date AS lead_days,
+    ship_date + quantity AS delivery_date
+FROM orders_data;
+
+-- Convert quantity to INTEGER before adding it to a DATE.
+SELECT
+    order_id,
+    order_date,
+    ship_date,
+    quantity,
+    ship_date - order_date AS lead_days,
+    ship_date + quantity::INTEGER AS delivery_date
+FROM orders_data;
 
