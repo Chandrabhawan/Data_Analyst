@@ -118,6 +118,86 @@ WHERE salary >
 -- • Easier to write for row-by-row comparisons.
 
 
+-- CTE: common table expesion / with clause
+
+--withount CTE
+select *
+from emp
+where salary > (select avg(salary) from emp);
+
+
+--With CTE
+with avg_salary as (
+select avg(salary) as avg_sal from emp
+)
+select * from emp
+inner join avg_salary on salary > avg_sal;
+
+
+with avg_salary as (
+select avg(salary) as avg_sal from emp
+),
+max_sal as (select max(avg_sal) as maxsal from avg_salary)
+select * from max_sal;
+--inner join avg_salary on salary > avg_sal;
+
+WITH avg_salary AS (
+    SELECT
+        dept_id,
+        AVG(salary) AS avg_sal
+    FROM emp
+    GROUP BY dept_id
+),
+max_sal AS (
+    SELECT MAX(avg_sal) AS max_avg_salary
+    FROM avg_salary
+)
+SELECT *
+FROM max_sal;
+
+
+--all about aggregation in sql. sum(), avg(), min(), max()
+
+select * from sales;
+
+select sum(amount) from sales;
+
+select salesperson_id, sum(amount) 
+from sales
+group by salesperson_id;
+
+--window function
+select salesperson_id, order_number, order_date
+,sum(amount) over(partition by salesperson_id) as total_salesperson_sales
+from sales;
+
+
+select salesperson_id, order_number, order_date, amount
+,sum(amount) over(order by order_date)
+from sales;
+
+select salesperson_id, order_number, order_date, amount
+,sum(amount) over(PARTITION by salesperson_id order by order_date)
+from sales;
+
+
+select salesperson_id, order_number, order_date, amount
+,sum(amount) over(order by order_date rows between 2 PRECEDING and current ROW)
+from sales;
+
+select salesperson_id, order_number, order_date, amount
+,sum(amount) over(order by order_date rows between 2 PRECEDING and 1 PRECEDING)
+from sales;
+
+
+select salesperson_id, order_number, order_date, amount
+,sum(amount) over(order by order_date rows between 1 PRECEDING and 1 FOLLOWING)
+from sales;
+
+
+select salesperson_id, order_number, order_date, amount
+,sum(amount) over(order by order_date rows between UNBOUNDED PRECEDING and current row)
+from sales;
 
 
 
