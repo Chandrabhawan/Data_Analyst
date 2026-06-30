@@ -125,46 +125,47 @@ WHERE salary >
 -- COMMON TABLE EXPRESSIONS (CTE)
 -- ==========================================================
 
+-- CTE (Common Table Expression) using the WITH clause.
+-- CTEs improve query readability and simplify complex SQL logic.
+
+-- ----------------------------------------------------------
 -- Find employees whose salary is greater than the
 -- overall average salary without using a CTE.
+-- ----------------------------------------------------------
 
-SELECT *
-FROM emp
-WHERE salary > (
-    SELECT AVG(salary)
-    FROM emp
-);
+select *
+from emp
+where salary > (select avg(salary) from emp);
 
--- Calculate the overall average salary using a CTE
--- and compare each employee's salary with it.
 
-WITH avg_salary AS (
-    SELECT AVG(salary) AS avg_sal
-    FROM emp
+-- ----------------------------------------------------------
+-- Find employees whose salary is greater than the
+-- overall average salary using a CTE.
+-- ----------------------------------------------------------
+
+with avg_salary as (
+select avg(salary) as avg_sal from emp
 )
-SELECT *
-FROM emp
-INNER JOIN avg_salary
-ON salary > avg_sal;
+select * from emp
+inner join avg_salary on salary > avg_sal;
 
+
+-- ----------------------------------------------------------
 -- Demonstrate multiple CTEs.
--- The first CTE calculates the average salary,
--- while the second CTE performs another calculation
--- on the first CTE result.
+-- First CTE calculates average salary.
+-- Second CTE performs another calculation on the CTE result.
+-- ----------------------------------------------------------
 
-WITH avg_salary AS (
-    SELECT AVG(salary) AS avg_sal
-    FROM emp
+with avg_salary as (
+select avg(salary) as avg_sal from emp
 ),
-max_sal AS (
-    SELECT MAX(avg_sal) AS maxsal
-    FROM avg_salary
-)
-SELECT *
-FROM max_sal;
+max_sal as (select max(avg_sal) as maxsal from avg_salary)
+select * from max_sal;
 
+-- ----------------------------------------------------------
 -- Calculate department-wise average salary and
 -- find the highest department average salary.
+-- ----------------------------------------------------------
 
 WITH avg_salary AS (
     SELECT
@@ -187,21 +188,17 @@ FROM max_sal;
 
 -- Display all sales records.
 
-SELECT *
-FROM sales;
+select * from sales;
 
 -- Calculate total sales amount.
 
-SELECT SUM(amount)
-FROM sales;
+select sum(amount) from sales;
 
 -- Calculate total sales for each salesperson.
 
-SELECT
-    salesperson_id,
-    SUM(amount)
-FROM sales
-GROUP BY salesperson_id;
+select salesperson_id, sum(amount)
+from sales
+group by salesperson_id;
 
 
 -- ==========================================================
@@ -209,177 +206,104 @@ GROUP BY salesperson_id;
 -- ==========================================================
 
 -- Calculate total sales for each salesperson
--- without collapsing rows.
+-- while preserving all rows.
 
-SELECT
-    salesperson_id,
-    order_number,
-    order_date,
-    SUM(amount) OVER (
-        PARTITION BY salesperson_id
-    ) AS total_salesperson_sales
-FROM sales;
+select salesperson_id, order_number, order_date
+,sum(amount) over(partition by salesperson_id) as total_salesperson_sales
+from sales;
 
--- Calculate cumulative (running) sales ordered
--- by order date.
+-- Calculate cumulative (running) sales
+-- ordered by order date.
 
-SELECT
-    salesperson_id,
-    order_number,
-    order_date,
-    amount,
-    SUM(amount) OVER (
-        ORDER BY order_date
-    )
-FROM sales;
+select salesperson_id, order_number, order_date, amount
+,sum(amount) over(order by order_date)
+from sales;
 
 -- Calculate running total separately
 -- for each salesperson.
 
-SELECT
-    salesperson_id,
-    order_number,
-    order_date,
-    amount,
-    SUM(amount) OVER (
-        PARTITION BY salesperson_id
-        ORDER BY order_date
-    )
-FROM sales;
+select salesperson_id, order_number, order_date, amount
+,sum(amount) over(PARTITION by salesperson_id order by order_date)
+from sales;
 
--- Calculate moving sum using
--- current row and previous two rows.
+-- Calculate moving sum using the current row
+-- and the previous two rows.
 
-SELECT
-    salesperson_id,
-    order_number,
-    order_date,
-    amount,
-    SUM(amount) OVER (
-        ORDER BY order_date
-        ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
-    )
-FROM sales;
+select salesperson_id, order_number, order_date, amount
+,sum(amount) over(order by order_date rows between 2 PRECEDING and current ROW)
+from sales;
 
--- Calculate sum of previous two rows only.
+-- Calculate the sum of only the previous two rows.
 
-SELECT
-    salesperson_id,
-    order_number,
-    order_date,
-    amount,
-    SUM(amount) OVER (
-        ORDER BY order_date
-        ROWS BETWEEN 2 PRECEDING AND 1 PRECEDING
-    )
-FROM sales;
+select salesperson_id, order_number, order_date, amount
+,sum(amount) over(order by order_date rows between 2 PRECEDING and 1 PRECEDING)
+from sales;
 
--- Calculate moving sum using one previous,
--- current and one following row.
+-- Calculate moving sum using one previous row,
+-- current row and one following row.
 
-SELECT
-    salesperson_id,
-    order_number,
-    order_date,
-    amount,
-    SUM(amount) OVER (
-        ORDER BY order_date
-        ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING
-    )
-FROM sales;
+select salesperson_id, order_number, order_date, amount
+,sum(amount) over(order by order_date rows between 1 PRECEDING and 1 FOLLOWING)
+from sales;
 
--- Calculate cumulative total from
--- first row until current row.
+-- Calculate cumulative total from the
+-- first row to the current row.
 
-SELECT
-    salesperson_id,
-    order_number,
-    order_date,
-    amount,
-    SUM(amount) OVER (
-        ORDER BY order_date
-        ROWS BETWEEN UNBOUNDED PRECEDING
-        AND CURRENT ROW
-    )
-FROM sales;
+select salesperson_id, order_number, order_date, amount
+,sum(amount) over(order by order_date rows between UNBOUNDED PRECEDING and current row)
+from sales;
 
 -- Calculate moving total for each salesperson.
 
-SELECT
-    salesperson_id,
-    order_number,
-    order_date,
-    amount,
-    SUM(amount) OVER (
-        PARTITION BY salesperson_id
-        ORDER BY order_date
-        ROWS BETWEEN 1 PRECEDING
-        AND CURRENT ROW
-    )
-FROM sales;
+select salesperson_id, order_number, order_date, amount
+,sum(amount) over(PARTITION by salesperson_id order by order_date rows between 1 PRECEDING and current row)
+from sales;
 
--- Return only the previous row value.
+-- Display only the previous row's value.
 
-SELECT
-    salesperson_id,
-    order_number,
-    order_date,
-    amount,
-    SUM(amount) OVER (
-        ORDER BY order_date
-        ROWS BETWEEN 1 PRECEDING
-        AND 1 PRECEDING
-    )
-FROM sales;
+select salesperson_id, order_number, order_date, amount
+,sum(amount) over(order by order_date rows between 1 PRECEDING and 1 PRECEDING)
+from sales;
 
 
 -- ==========================================================
 -- RANKING FUNCTIONS
 -- ==========================================================
 
--- Compare RANK(), DENSE_RANK(),
--- and ROW_NUMBER() based on salary.
+-- Compare RANK(), DENSE_RANK() and ROW_NUMBER()
+-- based on employee salary.
 
-SELECT *,
-       RANK() OVER (ORDER BY salary DESC) AS rn,
-       DENSE_RANK() OVER (ORDER BY salary DESC) AS dense_rn,
-       ROW_NUMBER() OVER (ORDER BY salary DESC) AS row_num_rn
-FROM emp;
+select *
+, rank() over(order by salary desc) as rn
+, dense_rank() over(order by salary desc) as dense_rn
+, row_number() over(order by salary desc) as row_num_rn
+from emp;
 
--- Compare ranking using salary
--- and employee age.
+-- Compare ranking functions using
+-- salary and employee age.
 
-SELECT *,
-       RANK() OVER (ORDER BY salary DESC, emp_age DESC) AS rn,
-       DENSE_RANK() OVER (ORDER BY salary DESC, emp_age DESC) AS dense_rn,
-       ROW_NUMBER() OVER (ORDER BY salary DESC, emp_age DESC) AS row_num_rn
-FROM emp;
+select *
+, rank() over(order by salary desc, emp_age desc) as rn
+, dense_rank() over(order by salary desc, emp_age desc) as dense_rn
+, row_number() over(order by salary desc, emp_age desc) as row_num_rn
+from emp;
 
--- Rank employees by employee ID.
+-- Rank employees based on employee ID.
 
-SELECT *,
-       RANK() OVER (ORDER BY emp_id DESC) AS rn,
-       DENSE_RANK() OVER (ORDER BY emp_id DESC) AS dense_rn,
-       ROW_NUMBER() OVER (ORDER BY emp_id DESC) AS row_num_rn
-FROM emp;
+select *
+, rank() over(order by emp_id desc) as rn
+, dense_rank() over(order by emp_id desc) as dense_rn
+, row_number() over(order by emp_id desc) as row_num_rn
+from emp;
 
--- Rank employees within each
--- department and manager.
+-- Rank employees within each department
+-- and manager.
 
-SELECT *,
-       RANK() OVER (
-           PARTITION BY dept_id, manager_id
-           ORDER BY salary DESC
-       ) AS rn,
-       DENSE_RANK() OVER (
-           PARTITION BY dept_id, manager_id
-           ORDER BY salary DESC
-       ) AS dense_rn,
-       ROW_NUMBER() OVER (
-           PARTITION BY dept_id, manager_id
-           ORDER BY salary DESC
-       ) AS row_num_rn
-FROM emp;
+select *
+, rank() over(partition by dept_id, manager_id order by salary desc) as rn
+, dense_rank() over(partition by dept_id, manager_id order by salary desc) as dense_rn
+, row_number() over(partition by dept_id, manager_id order by salary desc) as row_num_rn
+from emp;
 
 
 -- ==========================================================
@@ -389,27 +313,16 @@ FROM emp;
 -- Retrieve the highest-paid employee(s)
 -- from each department.
 
-WITH cte AS (
-    SELECT *,
-           RANK() OVER (
-               PARTITION BY dept_id
-               ORDER BY salary DESC
-           ) AS rn,
-           DENSE_RANK() OVER (
-               PARTITION BY dept_id
-               ORDER BY salary DESC
-           ) AS dense_rn,
-           ROW_NUMBER() OVER (
-               PARTITION BY dept_id
-               ORDER BY salary DESC
-           ) AS row_num_rn
-    FROM emp
-)
-SELECT *
-FROM cte
-WHERE dense_rn = 1;
+with cte as (
+select *
+, rank() over(partition by dept_id order by salary desc) as rn
+, dense_rank() over(partition by dept_id order by salary desc) as dense_rn
+, row_number() over(partition by dept_id order by salary desc) as row_num_rn
+from emp)
+select * from cte
+where dense_rn = 1;
 
--- Alternative solution using DENSE_RANK().
+-- Alternative approach using DENSE_RANK().
 
 SELECT *
 FROM (
@@ -422,40 +335,17 @@ FROM (
 ) t
 WHERE salary_rank = 1;
 
--- Retrieve the top two highest-paid
--- employees from each department.
 
-WITH cte AS (
-    SELECT *,
-           RANK() OVER (
-               PARTITION BY dept_id
-               ORDER BY salary DESC
-           ) AS rn,
-           DENSE_RANK() OVER (
-               PARTITION BY dept_id
-               ORDER BY salary DESC
-           ) AS dense_rn,
-           ROW_NUMBER() OVER (
-               PARTITION BY dept_id
-               ORDER BY salary DESC
-           ) AS row_num_rn
-    FROM emp
-)
-SELECT *
-FROM cte
-WHERE row_num_rn <= 2;
+-- ----------------------------------------------------------
+-- Retrieve the top 2 highest-paid employees
+-- from each department.
+-- ----------------------------------------------------------
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
+with cte as (
+select *
+, rank() over(partition by dept_id order by salary desc) as rn
+, dense_rank() over(partition by dept_id order by salary desc) as dense_rn
+, row_number() over(partition by dept_id order by salary desc) as row_num_rn
+from emp)
+select * from cte
+where row_num_rn <= 2;
