@@ -199,6 +199,14 @@ select salesperson_id, order_number, order_date, amount
 ,sum(amount) over(order by order_date rows between UNBOUNDED PRECEDING and current row)
 from sales;
 
+select salesperson_id, order_number, order_date, amount
+,sum(amount) over(PARTITION by salesperson_id order by order_date rows between 1 PRECEDING and current row)
+from sales;
+
+select salesperson_id, order_number, order_date, amount
+,sum(amount) over(order by order_date rows between 1 PRECEDING and 1 PRECEDING)
+from sales;
+
 
 
 
