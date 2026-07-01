@@ -349,3 +349,101 @@ select *
 from emp)
 select * from cte
 where row_num_rn <= 2;
+
+
+--LEAD/LAG window FUNCTIONS
+
+-- ==========================================================
+-- LEAD() & LAG() WINDOW FUNCTIONS
+-- ==========================================================
+
+-- LEAD() and LAG() are window functions used to access
+-- values from the next or previous row without using
+-- a self join.
+
+select * from orders;
+
+
+-- ----------------------------------------------------------
+-- Calculate total sales for each year.
+-- Use LAG() to retrieve the previous year's sales.
+-- Calculate Year-over-Year (YoY) sales difference.
+-- ----------------------------------------------------------
+
+with year_sales AS
+(select extract(year from order_date) as order_year, sum(sales) as sales
+from orders
+group by extract(year from order_date))
+select *
+,lag(sales, 1,0) over(order by order_year) as previour_year_sales
+,sales-lag(sales,1,0) over(order by order_year)
+from year_sales
+order by order_year;
+
+
+-- ----------------------------------------------------------
+-- Calculate total sales for each year.
+-- Use LEAD() to retrieve the next year's sales.
+-- ----------------------------------------------------------
+
+with year_sales AS
+(select extract(year from order_date) as order_year, sum(sales) as sales
+from orders
+group by extract(year from order_date))
+select *
+,lead(sales, 1,0) over(order by order_year) as next_year_sales
+from year_sales
+order by order_year;
+
+
+-- ----------------------------------------------------------
+-- Use LEAD() with descending order.
+-- Since the data is sorted in descending order,
+-- LEAD() returns the previous year's sales.
+-- ----------------------------------------------------------
+
+with year_sales AS
+(select extract(year from order_date) as order_year, sum(sales) as sales
+from orders
+group by extract(year from order_date))
+select *
+,lead(sales, 1,0) over(order by order_year desc) as prev_year_sales
+from year_sales
+order by order_year;
+
+
+-- ----------------------------------------------------------
+-- Calculate yearly sales for each region.
+-- This result can be used for regional trend analysis
+-- and further LEAD()/LAG() operations.
+-- ----------------------------------------------------------
+
+with year_sales AS
+(select region, extract(year from order_date) as order_year, sum(sales) as sales
+from orders
+group by region, extract(year from order_date))
+select *
+from year_sales
+order by order_year;
+
+
+-- ==========================================================
+-- Interview Notes
+-- ==========================================================
+
+-- LAG(column, offset, default)
+-- • Returns a value from a previous row.
+-- • Commonly used for Year-over-Year (YoY) analysis.
+-- • Useful for trend and variance calculations.
+
+-- LEAD(column, offset, default)
+-- • Returns a value from a following row.
+-- • Used for forecasting and future comparisons.
+
+-- offset
+-- • Number of rows to move forward or backward.
+-- • Default value is 1.
+
+-- default
+-- • Value returned when no previous or next row exists.
+-- • In these examples, 0 is returned.
