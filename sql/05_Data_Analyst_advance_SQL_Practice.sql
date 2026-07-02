@@ -450,6 +450,14 @@ order by order_year;
 -- • In these examples, 0 is returned.
 
 
+-- ==========================================================
+-- LEAD() & LAG() WITH PARTITION BY
+-- ==========================================================
+
+-- Calculate yearly sales for each region.
+-- Use LAG() to retrieve the sales value from
+-- two previous years within the same region.
+
 with year_sales AS
 (select region, extract(year from order_date) as order_year, sum(sales) as sales
 from orders
@@ -460,7 +468,13 @@ from year_sales
 order by order_year;
 
 
---self JOIN
+-- ==========================================================
+-- SELF JOIN
+-- ==========================================================
+
+-- Retrieve employee and manager details.
+-- Display employees whose salary is greater
+-- than their manager's salary.
 
 select e.emp_id, e.emp_name, m.emp_name as manager_name, e.salary, m.salary as manager_s
 from emp e
@@ -468,24 +482,89 @@ inner join emp m on e.manager_id = m.emp_id
 where e.salary > m.salary;
 
 
---interview quetion: no of records with diffrent kinds of join when there are duplicate key value
+-- ==========================================================
+-- JOINS WITH DUPLICATE & NULL VALUES
+-- ==========================================================
+
+-- Interview Question:
+-- Understand how different JOINs behave when
+-- duplicate values and NULL values are present
+-- in the joining columns.
+
+-- Insert NULL values into both tables.
+
 insert into t1 values (null);
+
 INSERT into t2 values (null);
+
+-- Display data from both tables.
+
 select * from t1;
+
 select * from t2;
+
+-- ----------------------------------------------------------
+-- INNER JOIN
+-- Returns only matching records.
+-- NULL values do not match each other.
+-- ----------------------------------------------------------
 
 select * from t1
 inner join t2 on t1.id1=t2.id2;
 
+-- ----------------------------------------------------------
+-- LEFT JOIN
+-- Returns all rows from the left table and
+-- matching rows from the right table.
+-- ----------------------------------------------------------
+
 select * from t1
 LEFT join t2 on t1.id1=t2.id2;
+
+-- ----------------------------------------------------------
+-- RIGHT JOIN
+-- Returns all rows from the right table and
+-- matching rows from the left table.
+-- ----------------------------------------------------------
 
 select * from t1
 right join t2 on t1.id1=t2.id2;
 
+-- ----------------------------------------------------------
+-- FULL OUTER JOIN
+-- Returns all matching and non-matching rows
+-- from both tables.
+-- ----------------------------------------------------------
+
 select * from t1
 full outer join t2 on t1.id1=t2.id2;
 
+
+-- ==========================================================
+-- Interview Notes
+-- ==========================================================
+
+-- LEAD() and LAG()
+-- • Used to compare current values with previous
+--   or next rows.
+-- • PARTITION BY resets the calculation for each group.
+-- • Frequently used for Year-over-Year (YoY) analysis.
+
+-- SELF JOIN
+-- • Joins a table with itself.
+-- • Commonly used to represent hierarchical data,
+--   such as Employee-Manager relationships.
+
+-- JOIN with NULL Values
+-- • NULL = NULL evaluates to FALSE.
+-- • INNER JOIN does not match NULL values.
+-- • LEFT/RIGHT/FULL JOIN include unmatched rows
+--   depending on the join type.
+
+-- Duplicate Keys
+-- • Duplicate matching keys produce multiple rows.
+-- • Number of output rows depends on the number of
+--   matching records in both tables.
 
 
 
