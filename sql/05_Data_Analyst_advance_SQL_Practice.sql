@@ -469,8 +469,8 @@ where e.salary > m.salary;
 
 
 --interview quetion: no of records with diffrent kinds of join when there are duplicate key value
-insert into t1 values (1);
-INSERT into t2 values (1);
+insert into t1 values (null);
+INSERT into t2 values (null);
 select * from t1;
 select * from t2;
 
