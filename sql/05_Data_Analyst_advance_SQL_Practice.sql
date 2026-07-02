@@ -423,6 +423,7 @@ with year_sales AS
 from orders
 group by region, extract(year from order_date))
 select *
+--,lead(sales, 1,0) over(order by order_year desc) as prev_year_sales
 from year_sales
 order by order_year;
 
@@ -447,3 +448,20 @@ order by order_year;
 -- default
 -- • Value returned when no previous or next row exists.
 -- • In these examples, 0 is returned.
+
+
+with year_sales AS
+(select region, extract(year from order_date) as order_year, sum(sales) as sales
+from orders
+group by region, extract(year from order_date))
+select *
+,lag(sales, 2,0) over(PARTITION by region order by order_year) as prev_year_sales
+from year_sales
+order by order_year;
+
+
+
+
+
+
+
