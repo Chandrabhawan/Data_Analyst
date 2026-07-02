@@ -460,6 +460,28 @@ from year_sales
 order by order_year;
 
 
+--self JOIN
+
+select e.emp_id, e.emp_name, m.emp_name as manager_name, e.salary, m.salary as manager_s
+from emp e
+inner join emp m on e.manager_id = m.emp_id
+where e.salary > m.salary;
+
+
+--interview quetion: no of records with diffrent kinds of join when there are duplicate key value
+insert into t1 values (1);
+INSERT into t2 values (1);
+select * from t1;
+select * from t2;
+
+
+
+
+
+
+
+
+
 
 
 
