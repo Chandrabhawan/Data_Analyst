@@ -176,7 +176,7 @@ WITH avg_salary AS (
 ),
 max_sal AS (
     SELECT MAX(avg_sal) AS max_avg_salary
-    FROM avg_salary
+    FROM avg_salary 
 )
 SELECT *
 FROM max_sal;
