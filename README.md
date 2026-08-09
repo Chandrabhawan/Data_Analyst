@@ -53,14 +53,13 @@ The goal is not only to write code, but to develop the ability to turn raw data 
 Data_Analyst/
 │
 ├── 🐍 Python/
-│   └── Python_Data_Analyst_Interview_Practice_Exercises.ipynb
+│  
 │
 ├── 📁 data_set/
-│   ├── raw/
-│   └── processed/
+│   
 │
 ├── 🗄️ sql/
-│   └── SQL queries, schemas & database practice
+│  
 │
 ├── 📄 README.md
 │
